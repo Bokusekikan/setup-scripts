@@ -1,0 +1,396 @@
+## Alternatives to internal programs ##
+- cp:
+	- pv
+	- gcp
+## 3D printing ##
+- cura
+- prusa-slicer
+
+## Alternative front-end ##
+- google:
+	- tuxi: https://github.com/Bugswriter/tuxi
+- youtube:
+	- freetube: https://github.com/FreeTubeApp/FreeTube
+	- invidious: https://github.com/iv-org/invidious
+- pixiv:
+	- pixiv-viewer: https://github.com/journey-ad/pixiv-viewer
+	- pix-ezviewer: https://github.com/Notsfsssf/Pix-EzViewer
+	- lightbox: https://github.com/pixiv/Lightbox
+	- lightbox (orig): https://github.com/hyperoslo/Lightbox
+
+## App/script launchers ##
+- terminal:
+	- dmenu
+	- rofi: https://github.com/davatorium/rofi
+	- morc_menu
+	- bmenu
+	- pmenu
+	- bemenu
+- hotkeys:
+	- sxhkd: https://github.com/baskerville/sxhkd
+	- triggerhappy: https://github.com/wertarbyte/triggerhappy
+	- dxhd: https://github.com/dakyskye/dxhd
+	- xbindkey
+
+## Art ##
+- krita
+- blender
+- inkscape
+- gimp
+
+## Automation ##
+- entr
+
+## Bios ##
+- Libreboot
+- Coreboot
+
+## Browsers ##
+- Firefox
+- IceCat
+- PaleMoon
+- Tor
+- Waterfox
+- Librewolf: https://gitlab.com/librewolf-community/browser
+- surf
+- vim-like:
+	- vieb
+	- qutebrowser
+	- konqueror
+	- conkeror
+	- nyxt: https://github.com/atlas-engineer/nyxt
+- terminal:
+	- w3m
+	- links2
+	- elinks
+	- lynx - ULW, cmd, ML
+
+Vivaldi - LW, Privacy,
+Brave - Privacy,
+Midori - LW
+GNUzilla
+IceCat
+Slimjet
+Iridium
+Comodo IceDragon - LW, Security,
+Torch Browser - LW
+Falcon(QupZilla) - LW
+Epic browser - Privacy, Security,
+Waterfox
+
+## Bookmarks ##
+- cli:
+	- buku: https://github.com/jarun/Buku
+
+## Compositor ##
+- picom: https://github.com/yshui/picom
+- compton
+
+## Organization ##
+- calendar:
+	- calcurse
+
+## Downloader ##
+- youtube-dl/youtube-viewer
+- axel (makes downloading faster)
+- aria2 (multi-protocol downloader)
+- fetch
+- (curl, wget)
+- pixiv:
+	- pixiv-extraction: https://github.com/smilingrumia/pixiv-extraction
+
+## E-book reader ##
+- calibre
+
+## Email manager ##
+- (neo)mutt
+- thunderbird
+
+## Encryption ##
+- --
+
+## File browser ##
+- graphical:
+	- pcmanfm
+	- dolphin
+	- sunflower: https://github.com/MeanEYE/Sunflower
+- terminal:
+	- ranger
+	- nnn
+	- fff
+	- lf
+	- vifm
+	- cfiles: https://github.com/mananapr/cfiles
+- commander-like:
+	- krusader
+	- double commander
+	- lfm
+	- mc
+	- fff
+	- vifm
+	- lf
+- dmenu:
+	- dmenufm: https://github.com/huijunchen9260/dmenufm
+- hunter
+
+## File sharing ##
+- onion share
+
+## File tagging ##
+- --
+
+## Fonts ##
+- japanese:
+	- https://wiki.archlinux.org/index.php/Localization/Japanese
+	- adobe-source-han-sans-jp-fonts
+	- adobe-source-han-serif-jp-fonts
+	- anthy
+	- mozc
+- chinese:
+	- f
+- cukrarna:
+	- d
+- rest:
+	- mononoki: https://github.com/madmalik/mononoki
+- xmobar:
+	- mononoki nerd font: aur: nerd-fonts-mononoki https://github.com/ryanoasis/nerd-fonts
+	- ubuntu: arch: ttf-ubuntu-font-family
+
+## FTP client ##
+- filezilla
+
+## Funny/interesting/novelty ##
+- cmatrix: matrix rain in terminal
+- cxxmatrix: matrix rain in terminal https://github.com/akinomyoga/cxxmatrix
+- figlet: changes text to ascii art
+- toilet
+- text-name: https://github.com/Anlos0023/text-name
+- cacaview: renders pictures and gif (doesn't animate them) in terminal as ascii art
+- chafa: renders pictures and gif in terminal as ascii art
+- hollywood
+- sneakers
+
+## Gaming ##
+- proton
+- playonlinux
+- wine
+- steam
+- lutris
+- osu
+- dxvk
+
+## Image viewer ##
+- sxiv
+- feh
+
+## Lockscreens ##
+- betterlocksreen: https://github.com/pavanjadhaw/betterlockscreen
+
+## Mindmaps/diagrams ##
+- via LaTeX
+- via R(markdown)
+- draw.io/diagrams: https://github.com/jgraph/drawio-desktop
+- asciiflow2: https://github.com/lewish/asciiflow2
+- Dia - http://dia-installer.de/
+- yEd - https://www.yworks.com/products/yed/
+- vue - https://vue.tufts.edu/
+- coggle.it - https://coggle.it/
+- mindmup - https://www.mindmup.com/
+- gitmind - https://gitmind.com/
+- planttext - https://www.planttext.com/	
+
+
+## Music player ##
+- graphical:
+	- deadbeef
+- terminal:
+	- c
+- cmus
+- moc: mocp to start
+- mp3blaster
+- sox
+- mpd w/ncmpcpp lib
+- ocp/opencp
+- pulseaudio
+
+## Music visualizer ##
+- cava
+- cli visualizer
+- music_vusualizer
+- ncmpcpp (lib)
+
+## Notes/notetaking ##
+- Notion
+- vimwiki - vim plugin
+
+## Password manager ##
+- KeepassXC
+- bitwarder
+
+## PDF reader ##
+- zathura
+- mupdf
+- okular
+
+## Programming ##
+- C:
+	- d
+- C++:
+	- s
+- Python:
+	- s
+- HTML:
+	- s
+- CSS:
+	- s
+- JS:
+	- s
+- Haskell:
+	- d
+
+## Remote access ##
+- SSH
+- SFTP
+- scrcpy: https://github.com/Genymobile/scrcpy
+- remmina
+
+## RSS reader ##
+- fluent-reader: https://github.com/yang991178/fluent-reader
+- newsboat
+
+## Screen grab ##
+- flameshot
+
+## Shell tools ##
+- dateutils: https://github.com/hroptatyr/dateutils
+- ncdu
+- speedread
+
+## Simple documents ##
+- LaTeX: [texlive-most texlive-lang]
+- R(markdown): [r pandoc pandoc-citeproc pandoc-crossref] -> sudo R -> install.packages("rmarkdown") -> install.packages("DiagrammeR")
+- groff
+- pandoc - document converter (pandoc + markdown ## presentations)
+
+## Spreadsheets ##
+- SC-IM: https://github.com/andmarti1424/sc-im
+
+## Status bar ##
+- polybar
+- lemonbar/bar: https://github.com/LemonBoy/bar
+- tint2
+- xmobar
+
+## Syncing ##
+- syncthing
+- rclone
+- rsync
+
+## System info ##
+- neofetch
+- pfetch
+- paleofetch
+- fastfetch
+- uwufetch: https://github.com/TheDarkBug/uwufetch
+- lshw
+- lm-sensors: https://github.com/lm-sensors/lm-sensors
+- htop
+- ctop: https://github.com/bcicen/ctop
+- 
+
+## System tray ##
+- stalonetray
+- trayer
+- trayer-srg: https://github.com/sargon/trayer-srg
+
+## Terminals ##
+- st
+- urxvt
+- kitty
+- alacrity
+- eDEX-UI: https://github.com/GitSquared/edex-ui
+
+## Terminal finder ##
+- fzf: https://github.com/junegunn/fzf
+- dmenu?
+
+## Text editor ##
+- (neo)vim: https://github.com/neovim/neovim
+- vscodium: https://github.com/VSCodium/vscodium
+
+## Tools ##
+- multiboot usb:
+	- ventoy: https://github.com/ventoy/Ventoy
+	- easy2boot: 
+	- woeusb: https://github.com/WoeUSB/WoeUSB
+- duplicate finder:
+	- czkawka: https://github.com/qarmin/czkawka
+- tui devel:
+	- ftxui: https://github.com/ArthurSonzogni/FTXUI
+
+## Torrent client ##
+- transmission - server
+- qbittorrent
+- tribler - anonimity
+- tixati
+- deluge
+- rtorrent: https://github.com/rakshasa/rtorrent
+- rtorrent-ps: https://github.com/pyroscope/rtorrent-ps
+
+## Typing ##
+- plover
+
+## Video player ##
+- mpv
+- vlc
+- AsciiVid: 
+- ff2mpv: https://github.com/woodruffw/ff2mpv
+
+## Virtualization ##
+- QEMU/KVM
+- virt-manager
+- (virtualbox)
+
+## Wallpapers ##
+- variety
+- nitrogen
+- feh
+- fondo: https://github.com/calo001/fondo
+- wallset: https://github.com/terroo/wallset
+- komorebi: https://github.com/cheesecakeufo/komorebi
+- wallpaperengine: https://github.com/Almamu/linux-wallpaperengine
+- xwallpaper: https://github.com/stoeckmann/xwallpaper
+
+## Window managers ##
+- tiling:
+	- xmonad
+	- bspwm
+	- awesome
+	- dwm
+	- qtile
+- normal:
+	- openbox
+	- DE:KDE
+	- DE:xfce
+
+## Window swallowing ##
+- agnostic:
+	- devour: https://github.com/salman-abedin/devour/
+	- xdo: https://github.com/baskerville/xdo
+- BSPWM:
+	- bspswallow: https://github.com/JopStro/bspswallow
+	- bspwm_swallow: https://github.com/salman-abedin/bspwm_swallow
+- DWM:
+	- PATCH:swallow: https://dwm.suckless.org/patches/swallow/
+
+http://lukesmith.xyz/programs.html
+http://privacytools.io
+http://suckless.org
+
+
+## Unfiltered ##
+- paperless: https://github.com/the-paperless-project/paperless
+- fasd: https://github.com/clvv/fasd
+- dragon: https://github.com/mwh/dragon
+- pistol: https://github.com/doronbehar/pistol
+- kde connect: 

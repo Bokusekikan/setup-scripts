@@ -1,0 +1,218 @@
+#Try to install arch with mostly systemd tools
+
+Integrity check 
+	gpg --keyserver-options auto-key-retrieve --verify archlinux-{version}-x86_64.iso.sig
+
+Keymap setting
+	ls /usr/share/kbd/keymaps/**/*.map.gz OR localectl list-keymaps | grep {keymapname}
+	loadkeys {keymapname}
+	loadkeys cz-qwertz
+
+Bootmode verification
+	ls /sys/firmware/efi/efivars
+
+Internet connection check
+	for wireless: iwctl OR wifi-menu
+	ping gnu.org
+
+Setting systemclock
+	timedatectl set-ntp true
+	timedatectl status
+
+Disk - UEFI with GPT
+	root:            mkfs.ext4 /dev/sdX2 -> mount /dev/sdX2 /mnt -> mkdir /mnt/efi OR /mnt/boot
+	boot: >300M -> mkfs.fat -F32 /dev/sdX1 -> mount /dev/sdX1 /mnt/boot OR /mnt/efi
+	swap: same as ram -> mkswap /dev/sdX3 -> swapon /dev/sdX3
+
+Disk - legacy with DOS
+	root: make bootable -> mkfs.ext4 /dev/sdX1 -> mount /dev/sdX1 /mnt
+	swap: same as ram -> mkswap /dev/sdX2 -> swapon /dev/sdX2
+
+Select mirrors
+	use reflector for this
+
+Base install
+	pacstrap /mnt base base-devel linux linux-firmware linux-headers
+
+Fstab generation
+	genfstab -U /mnt >> /mnt/etc/fstab
+
+Change root
+	arch-chroot /mnt
+
+Swap file - instead of swap partition
+	fallocate -l XGB /swapfile
+	chmod 600 /swapfile
+	mkswap /swapfile
+	swapon /swapfile
+	vim /etc/fstab
+		/swapfile none swap defaults 0 0
+
+Extended install - important packages
+	pacman -S ...
+	
+	Bootloader:	grub
+	Wallpapers:	nitrogen
+	Development:	git dialog
+	XDG things:	xdg-user-dirs xdg-utils
+	MS tools:	mtools dosfstools
+	Compositor:	picom
+	Terminal:	kitty
+	Browser:	firefox qutebrowser
+	Text editor:	neovim OR vim
+	Audio:		pulseaudio pavucontrol
+	Display manager: lightdm lightdm-gtk-greeter
+	Networking:	networkmanager network-manager-applet openssh
+	Ucodes:		amd-ucode OR intel-ucode
+	Info/man pages:	man-db man-pages texinfo
+	Wifi:		wpa_suplicant wireless_tools
+	UEFI install:	efibootmgr
+	Multiboot:	os-prober
+	Bluetooth:	bluez bluez-utils pulseaudio-bluetooth
+	Alt. audio:	alsa-utils 
+	Printing:	cups
+	Mirrorlist rank: reflector
+	GPU drivers:	intel - xf86-video-intel (might resolve issues with xorg)
+			amd - xf86-video-amdgpu
+			nvidia - nvidia nvidia-utils
+			vbox - xf86-video-fbdev
+	Desktop environments: xfce4 xfce4-goodies
+
+Extended install - aditional packages
+	pacman -S ...
+	
+	refer to "arch_programs"
+
+Timezone
+	ls /usr/share/zoneinfo
+	ln -sf /usr/share/zoneinfo/{Region}/{City} /etc/localtime
+	hwclock --systohc
+
+Localization
+	vim /etc/locale.gen
+	locale-gen
+	vim /etc/locale.conf
+		LANG=
+                LC_ADDRESS=
+                LC_IDENTIFICATION=
+                LC_MEASUREMENT=
+                LC_MONETARY=
+                LC_NAME=     
+                LC_NUMERIC=
+                LC_PAPER=   
+                LC_TELEPHONE=
+                LC_TIME=   
+	vim /etc/vconsole.conf
+		KEYMAP={keymapname}
+		#KEYMAP_TOGGLE={second_keymapname}
+
+Network
+	vim /etc/hostname
+		{myhostname}
+	vim /etc/hosts
+		127.0.0.1       localhost
+		::1             localhost
+                127.0.1.1       {myhostname}.localdomain  {myhostname}
+		for static IP change 127.0.1.1 to the static IP
+	systemctl enable NetworkManager
+
+Initramfs
+	mkinitcpio -P
+
+Root passwork
+	passwd
+
+Bootloader - legacy
+	grub-install --target=i386-pc /dev/sdX
+  	grub-mkconfig -o /boot/grub/grub.cfg
+	
+Bootloader - uefi
+	grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot
+	grub-mkconfig -o /boot/grub/grub.cfg
+
+Bluetooth 
+	systemctl enable bluetooth
+
+Printing
+	systemctl enable org.cups.cupsd
+
+SSH
+	systemctl enable sshd
+
+Enabling wheel group
+	vim /etc/sudoers  OR  EDITOR=nano visudo
+	uncomment %wheel ALL=(ALL) ALL or %wheel ALL=(ALL) NOPASSWD: ALL
+	Defaults !tty_tickets
+	LUKE PRO TIP: wants root password except for listed commands
+		%wheel ALL=(ALL) ALL
+		%wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/pacman -Syyu,...
+
+
+Additional user(s)
+	useradd -G wheel -s /bin/bash -m -c "Full Name" name
+
+Adding user(s) to wheel group
+	usermod -aG wheel,$group1,$group2 $user
+
+Passwords for users
+	passwd $user
+
+Display server
+	pacman -S [xorg] xorg-server xorg-xinit #xorg is a meta package
+	cp /etc/X11/xinit/xinitrc /home/fesoj/.xinitrc  -default xinitrc
+	as user 
+		touch .xinitrc
+			exec ...
+
+Display manager (lockscreen)
+	systemctl enable lightdm
+
+Desktop environment or window manager
+
+
+Yay
+	git clone https://aur.archlinux.org/yay.git
+	cd yay
+	makepkg -si PKGBUILD
+
+MS fonts
+	yay -S ttf-ms-fontss
+
+SSD trimming
+	systemctl enable fstrim.timer
+	
+Fonts
+	ttf-linux-libertine ttf-inconsolata
+	noto-fonts
+	mononoki-nerd-fonts
+
+
+
+
+
+
+
+
+
+
+~/.config/fontconfig/fonts.conf
+families - serif sans-serif sans monospace
+
+exec i3 >> .xinitrc
+
+ctrl+alt+f(2,3,4) -> changes the tty
+
+~/.profile and ~/.bash_profile are read everytime you login great for starting programs
+
+
+
+
+
+
+
+
+
+
+
+linux linux-headers OR linux-lts linux-lts-headers
+netctl

@@ -1,0 +1,16 @@
+# Enables wheel group
+sed 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' "/etc/sudoers"
+echo '%wheel ALL=(ALL) ALL' >> "/etc/sudoers"
+
+# Enables nopasswd wheel group
+sed 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' "/etc/sudoers"
+echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> "/etc/sudoers"
+
+# Enables nopasswd wheel group for specified commands only
+sed 's/# %wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL\n%wheel ALL=(ALL) NOPASSWD: \/usr\/bin/poweroff, \/usr\/bin\/reboot/' "/etc/sudoers"
+echo '%wheel ALL=(ALL) NOPASSWD: \/usr\/bin/poweroff, \/usr\/bin\/reboot/' "/etc/sudoers"
+
+# Enables tty_tickets
+echo "Defaults !tty_tickets" >> /etc/sudoers
+
+

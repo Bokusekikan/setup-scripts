@@ -1,0 +1,429 @@
+#!/bin/bash
+#echo "hello"
+RAW_SCRIPT_NAME=$0
+SCRIPT_NAME=${RAW_SCRIPT_NAME:2}
+
+#manually do:
+#		connect to wifi
+#		change keymap
+#		partition disks
+#		format disks -> mkfs.ext4 mkswap
+#		mount disks
+#		(activate swap -> swapon)
+
+
+### install options: ############################################
+
+#INSTALL_MODE="legacy" #OPTIONS: legacy uefi
+
+ROOT_DRIVE="/dev/sda"
+ROOT_PART="/dev/sda1"
+SWAP_PART="yes" #OPTIONS: yes no
+
+KERNEL_TYPE="stable" #OPTIONS:stable zen lts
+
+KEYMAP="cz-qwertz"
+
+GPU_DRIVER="nvidia" #OPTIONS: nvidia amd intel vbox laptop
+CPU_UCODE="intel" #OPTIONS: intel amd
+
+LOGIN_MANAGER="lightdm" #OPTIONS: lightmd xinit 
+DESKTOP="xmonad" #OPTIONS: xmonad xfce kde openbox fluxbox icewm
+
+TIMEZONE_REGION="Europe"
+TIMEZONE_CITY="Prague"
+
+LOCALE_GEN_LANG_1="en_US.UTF8 UTF-8"
+LOCALE_GEN_LANG_2="cs_CZ.UTF8 UTF-8"
+LOCALE_LANG="${LOCALE_GEN_LANG_1::10}"
+LOCALE_LC="${LOCALE_GEN_LANG_2::10}"
+
+HOSTNAME="archbox"
+
+ENABLE_SSH="1" #OPTIONS: 1=yes 0=no
+
+EXTRA_SHELL=""
+
+ROOT_NAME="root"
+ROOT_PASS="rootpass"
+
+USER_NAME="fesoj"
+USER_PASS="maturant"
+
+#################################################################
+package_installer(){
+	packages="$packages $1"
+}
+
+package_installer_clear(){
+	packages=""
+}
+
+packages_list(){
+	## GPU drivers ###########################################
+	case $GPU_DRIVER in
+		amd) package_installer "xf86-video-amdgpu" ;;  #amd
+		nvidia) package_installer "nvidia nvidia-utils" ;; #nvidia
+		intel) package_installer "xf86-video-???" ;;  #intel
+		laptop) package_installer " " ;; #intel+nvidia laptops
+		vbox) package_installer "xf86-video-fbdev" ;;    #vbox
+	esac
+	##########################################################
+
+	## CPU Microcodes ########################################
+	case $CPU_UCODE in 
+		intel) package_installer "intel-ucode" ;;  #intel
+		amd) package_installer "amd-ucode" ;;   #amd
+	esac
+	###########################################################
+
+	## login manager (display manager) ########################
+	case $LOGIN_MANAGER in
+		lightdm) package_installer "lightdm lightdm-gtk-greeter" ;; #lightdm
+		xinit | startx) package_installer "xorg-xinit"	;; #xinit/startx
+	esac
+	###########################################################
+
+	## desktops ###############################################
+	packages="$packages xorg" # X server itself
+	case $DESKTOP in
+		xmonad) package_installer "xmonad xmonad-contrib xmobar" ;; #xmonad
+		xfce | xfce4) package_installer "xfce4 xfce4-goodies" ;; #xfce4
+		kde | kdeplasma) ;;
+		openbox) ;;
+		fluxbox) ;;
+		icewm) ;;
+	esac
+	###########################################################
+
+	## Extra shell ############################################
+	#case $EXTRA_SHELL in 
+	#	zsh) package_installer "zsh" ;; #shell
+	#	fish) ;;
+	package_installer "zsh"
+	###########################################################
+
+	## Text editors ###########################################
+	package_installer "neovim"
+	package_installer "emacs"
+	#package_installer "nano"
+	#package_installer "micro"
+
+	###########################################################
+
+	## File manager ###########################################
+	package_installer "pcmanfm"
+	package_installer "ranger"
+	#package_installer "fff"
+	#package_installer "nnn"
+	###########################################################
+
+	## Terminals ##############################################
+	package_installer "kitty"                       #terminal
+	package_installer "tmux"			#terminal multiplexer
+	###########################################################
+
+	## Browsers ###############################################
+	package_installer "firefox"
+	package_installer "qutebrowser"         #browser
+	###########################################################
+
+	## Audio ##################################################
+	package_installer "pulseaudio pavucontrol"      #audio
+	###########################################################
+
+	## Network ################################################
+	package_installer "networkmanager network-manager-applet" #network
+ 	package_installer "openssh"
+	package_installer "wpa_supplicant iwd"		#network - wifi
+	###########################################################
+
+	## Miscellanious ##########################################
+	package_installer "man-db man-pages texinfo"    #info pages
+	package_installer "mtools dosfstools"           #ms utils
+	package_installer "git dialog"  	        #dev utils ??whiptail??
+	package_installer "xdg-user-dirs xdg-utils"     #xdg
+	package_installer "grub"                        #bootloader
+	package_installer "picom"                       #compositor
+	package_installer "nitrogen"                    #wallpaper setter
+	package_installer "rofi dmenu"                  #app launchers
+	package_installer "stow"			#dotfile management
+	###########################################################
+
+	## Databases ##############################################
+
+	###########################################################
+
+	## Multimedia #############################################
+	package_installer "mpv"
+	package_installer "vlc"
+
+	###########################################################
+
+	## Tools ##################################################
+	#package_installer "columns" #preinstalled
+
+	###########################################################
+
+	#package_installer ""
+}
+
+prechroot(){
+
+	#if [ -z "$ROOT_DRIVE" ]; then
+	#	lsblk -d -n -l -o NAME,SIZE,LABEL,TYPE,MOUNTPOINT | grep -v 0B > /tmp/disks	
+	#	#lsblk -n -l -o NAME,SIZE,LABEL,TYPE,MOUNTPOINT | grep -v 0B > /tmp/disks	
+	#	options=()
+
+	#	while read row; do
+	#		options+=("$row")
+	#	done < /tmp/disks
+	#	
+	#	PS3="Select a disk for installation: "
+	#	select ITEM in "${options[@]}"
+	#	do
+	#		ROOT_DRIVE="/dev/$(echo $ITEM | awk '{print $1}')"
+	#		break
+	#	done
+	#fi
+
+	#if [ -z "$SWAP_PART" ]; then
+
+	#	PS3="Do you want swap partition: "
+	#	select ITEM in yes no
+	#	do
+	#		SWAP_PART=$ITEM
+	#		break
+	#	done
+	#fi
+
+	#
+	#case $SWAP_PART in
+	#	yes) ;;
+	#		
+	#	no) ;;
+	#		
+	#esac
+
+	case $KERNEL_TYPE in
+		stable) KERNEL="linux linux-headers" ;; 	#stable kernel
+		lts) KERNEL="linux-lts linux-lts-headers" ;;	#lts kernel
+		zen) KERNEL="linux-zen linux-zen-headers" ;;	#zen kernel
+	esac
+
+	loadkeys $KEYMAP
+	timedatectl set-ntp true
+	mount $ROOT_PART /mnt
+	pacstrap /mnt base base-devel linux-firmware $KERNEL
+	genfstab -U /mnt >> /mnt/etc/fstab
+	echo "Initial setup complete"
+}
+
+chrting(){
+	cp $SCRIPT_NAME /mnt/$SCRIPT_NAME
+	arch-chroot /mnt ./$SCRIPT_NAME -p 3
+	echo "arch-chroot complete installer will now close"
+	rm /mnt/$SCRIPT_NAME
+	cp $SCRIPT_NAME /mnt/home/$USER_NAME/$SCRIPT_NAME
+	umount /mnt
+	#reboot
+}
+
+install(){
+	package_installer_clear
+
+	packages_list
+	
+	#pacman -S --noconfirm $packages
+	pacman -S $packages
+
+	ln -sf /usr/share/zoneinfo/$TIMEZONE_REGION/$TIMEZONE_CITY /etc/localtime 
+	hwclock --systohc
+	echo "$LOCALE_GEN_LANG_1" >> /etc/locale.gen
+	echo "$LOCALE_GEN_LANG_2" >> /etc/locale.gen
+	locale-gen
+	echo "LANG=$LOCALE_LANG" >> /etc/locale.conf
+	#echo "LC_ALL=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_ADDRESS=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_IDENTIFICATION=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_MEASUREMENT=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_MONETARY=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_NAME=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_NUMERIC=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_PAPER=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_TELEPHONE=$LOCALE_LC" >> /etc/locale.conf
+	echo "LC_TIME=$LOCALE_LC" >> /etc/locale.conf
+
+	echo "KEYMAP=$KEYMAP" >> /etc/vconsole.conf
+
+	echo "$HOSTNAME" >> /etc/hostname
+	echo "127.0.0.1     localhost" >> /etc/hosts
+	echo "::1           localhost" >> /etc/hosts
+	echo "127.0.1.1     $HOSTNAME.localdomain $HOSTNAME" >> /etc/hosts
+
+	systemctl enable NetworkManager
+	systemctl enable lightdm
+	[ $ENABLE_SSH -eq 1 ] && systemctl enable sshd
+	mkinitcpio -P
+
+	echo "$ROOT_NAME:$ROOT_PASS" | chpasswd
+
+	ls /sys/firmware/efi/efivars 2> /dev/null > /dev/null
+	[ $? -eq 0 ] && INSTALL_MODE=uefi || INSTALL_MODE=legacy
+
+	case $INSTALL_MODE in 
+		legacy) grub-install --target=i386-pc $ROOT_DRIVE ;;
+		uefi) grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot ;;
+	esac
+	grub-mkconfig -o /boot/grub/grub.cfg
+
+	echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
+	#echo "%wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/poweroff,/usr/bin/pacman -Syu" >> /etc/sudoers
+	echo "Defaults !tty_tickets" >> /etc/sudoers
+
+	useradd -m -G wheel $USER_NAME
+	#useradd -m -G wheel -s /bin/zsh $USER_NAME
+	echo "$USER_NAME:$USER_PASS" | chpasswd
+	
+	#chown -R $USER_NAME /home/$USER_NAME
+	##chown -R $USER_NAME:$USER_NAME /home/$USER_NAME
+}
+
+setup(){
+	#AUR
+	#cd /home/$USER_NAME
+	git clone https://aur.archlinux.org/yay.git /home/$USER_NAME/yay 
+	cd /home/$USER_NAME/yay
+	su -c "makepng --noconfirm -si" $USER_NAME
+	#makepkg --noconfirm -si
+	cd
+
+	#japanese keyboard and language
+	
+	#for startx/xinit
+        #echo "setxkbmap cz &" >> .xinitrc
+	#echo "nitrogen --restore &" >> .xinitrc
+	#echo "picom -f &" >> .xinitrc
+
+	#for lightdm
+        #echo "setxkbmap cz &" >> .xprofile
+	#echo "nitrogen --restore &" >> .xprofile
+	#echo "picom -f &" >> .xprofile
+
+	#mkdir .xmonad 
+	#echo "import XMonad
+	#main = xmonad def
+	#	{ terminal = "kitty"
+	#	, modMask = mod4Mask
+	#	}" > .xmonad/xmonad.hs
+
+	#bare git dotfiles - not used
+	#mkdir -p /home/fesoj/git/public
+	#cd /home/fesoj/git/public
+	#git clone --bare https://github.com/Bokusekikan/dotfiles
+	#git pull --git-dir=$HOME/git/public/dotfiles/ --work-tree=$HOME https://github.com/Bokusekikan/dofiles
+
+	#GNU/stow dotfiles
+	cd
+
+	#rm X
+	#rm X
+	#rm X
+	#rm X
+	#rm X
+	#rm -R X
+	#rm -R X
+	#rm -R X
+	#rm -R X
+	#rm -R X
+	#rm -R X
+	#rm -R X
+	#rm -R X
+
+	su -c "git clone https://github.com/Bokusekikan/dotfiles ~/git/public/dotfiles" $USER_NAME
+	cd /home/$USER_NAME/git/public/dotfiles
+	stow -t ~/ .
+	cd
+}
+
+rice(){
+	#Download fonts
+	#Apply fonts
+	#Download theme
+	#Apply theme
+	#Download icon pack
+	#Apply icon pack
+	
+	
+	## COMMON PART ##
+	
+	## DE/WM SPECIFIC ##
+	echo "this is rice"
+}
+
+usage(){
+	stageunder="\033[04mSTAGE\033[0m"
+	partunder="\033[04mPART\033[0m"
+	echo -e "Usage:
+	-h, --help
+		Prints this help
+	-p $partunder, --part $partunder
+		Runs a specified part of the install script.
+		AVAILABLE:
+			1 or prechroot -> sets up few things before installation
+			2 or chrting   -> copies this script to /mnt and executes part 3
+			3 or install   -> installs the system
+			4 or setup     -> installs dotfiles and aur
+			5 or rice      -> applies rice to the system
+	-s $stageunder, --stage $stageunder
+		Runs a specified stage of the install script.
+		AVAILABLE:
+			1 or install -> installs the system (equivalent to parts 1 and 2) 
+			2 or setup   -> sets up the environment (equivalent to parts 4 and 5)"
+}
+
+warning(){
+	echo "Before running the script ensure the install options are reflecting your neeeds/wants and are compatible with your computer"
+
+	echo "Run the script with: 
+	$SCRIPT_NAME -s 1 OR $SCRIPT_NAME -s install	For installation of the system
+	$SCRIPT_NAME -s 2 OR $SCRIPT_NAME -s setup	For setup of the user space/environment"
+
+	echo "For help type $SCRIPT_NAME -h OR --help"
+}
+
+if [[ $# -eq 0 ]]; then
+	warning
+else
+	case $1 in
+		-p | --part)
+			shift
+			case $1 in 
+				prechroot | 1) prechroot ;;
+				chrting | 2) chrting ;;
+				install | 3) install ;;
+				setup | 4) setup ;;
+				rice | 5) rice ;;
+				*) echo "Unknown part" ;;
+			esac 
+			;;
+		-s | --stage )
+			shift
+			case $1 in 
+				install | 1)
+					prechroot
+					chrting
+					#install
+					;;
+				setup | 2)
+					setup
+					rice
+					;;
+				*) echo "Unknown stage" ;;
+			esac
+			;;
+			
+		-h | --help ) usage ;;
+		*) echo "Unknown choice" ;;
+	esac	
+fi
